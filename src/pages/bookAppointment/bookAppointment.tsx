@@ -45,6 +45,11 @@ const BookAppointment = () => {
           time: "",
         });
         setValidated(false);
+
+        setTimeout(() => {
+          window.location.replace("/"); 
+        }, 1000);
+
       } catch (err) {
         console.error("Failed to create appointment:", err);
       }
