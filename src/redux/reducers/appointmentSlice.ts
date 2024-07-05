@@ -9,7 +9,14 @@ export const api = createApi({
     getCountries: builder.query({
       query: () => '/all',
     }),
+    createAppointment: builder.mutation({
+      query: (appointment) => ({
+        url: `${process.env.REACT_APP_BACKEND_URL}/appointments`,
+        method: 'POST',
+        body: appointment,
+      }),
+    }),
   }),
 });
 
-export const { useGetCountriesQuery } = api;
+export const { useGetCountriesQuery, useCreateAppointmentMutation } = api;

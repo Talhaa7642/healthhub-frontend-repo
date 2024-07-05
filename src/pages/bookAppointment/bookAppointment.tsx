@@ -1,16 +1,18 @@
-import React, { useState } from 'react';
-import { Form, Button, Container, Alert, Row, Col } from 'react-bootstrap';
+import React, { useState } from "react";
+import { Form, Button, Container, Alert, Row, Col } from "react-bootstrap";
+import { useCreateAppointmentMutation } from "../../redux/reducers/appointmentSlice";
 
 const BookAppointment = () => {
+  const [createAppointment, { isLoading, isSuccess, isError, error }] =
+    useCreateAppointmentMutation();
 
-  
   const [formData, setFormData] = useState({
-    name: '',
-    email: '',
-    phone: '',
-    service: '',
-    date: '',
-    time: '',
+    name: "",
+    email: "",
+    phone: "",
+    service: "",
+    date: "",
+    time: "",
   });
 
   const [validated, setValidated] = useState(false);
@@ -24,23 +26,28 @@ const BookAppointment = () => {
     });
   };
 
-  const handleSubmit = (e: any) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     const form = e.currentTarget;
     if (form.checkValidity() === false) {
       e.stopPropagation();
       setValidated(true);
     } else {
-      setShowAlert(true);
-      setFormData({
-        name: '',
-        email: '',
-        phone: '',
-        service: '',
-        date: '',
-        time: '',
-      });
-      setValidated(false);
+      try {
+        await createAppointment(formData).unwrap();
+        setShowAlert(true);
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          service: "",
+          date: "",
+          time: "",
+        });
+        setValidated(false);
+      } catch (err) {
+        console.error("Failed to create appointment:", err);
+      }
     }
   };
 
@@ -48,7 +55,11 @@ const BookAppointment = () => {
     <Container className="py-5">
       <h1 className="text-center mb-4">Book an Appointment</h1>
       {showAlert && (
-        <Alert variant="success" onClose={() => setShowAlert(false)} dismissible>
+        <Alert
+          variant="success"
+          onClose={() => setShowAlert(false)}
+          dismissible
+        >
           Appointment booked successfully!
         </Alert>
       )}
